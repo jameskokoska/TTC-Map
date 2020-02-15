@@ -2,9 +2,9 @@
 #define NUM_LEDS 120
 #define DATA_PIN 6
 #define BRIGHTNESS 1
-#define TRAINTRAVEL 1 //10 or 1 or 15
-#define STATIONWAIT 0.5 //10 or 0.5 or 15
-#define SPEED 0.5 //1 or 0.5 or 2
+#define TRAINTRAVEL 15 //10 or 1 or 15
+#define STATIONWAIT 15 //10 or 0.5 or 15
+#define SPEED 2 //1 or 0.5 or 2
 #define COL_TRANSFER CRGB::White
 
 CRGB leds[NUM_LEDS];
