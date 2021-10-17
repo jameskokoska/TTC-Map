@@ -1,30 +1,30 @@
 #include <FastLED.h>
-#define NUM_LEDS 120
+#define NUM_LEDS 150
 #define DATA_PIN 6
-#define BRIGHTNESS 1
+#define BRIGHTNESS 50
 #define TRAINTRAVEL 15 //10 or 1 or 15
 #define STATIONWAIT 15 //10 or 0.5 or 15
 #define SPEED 2 //1 or 0.5 or 2
 #define COL_TRANSFER CRGB::White
+#define BORDER_START 115
+#define LOWER_BRIGHTNESS_OF_LINES_PERCENT 220
 
 CRGB leds[NUM_LEDS];
 int currentTransferStop = -1;
-int lines[8][45] ={{0,1,3,5,7,9,11,13,15,17,19,21,23,25,88,86,26,74,27,29,31,33,35,37,39,41,43,45,48,50,52,-1},
-                  {52,53,54,56,58,59,-1},
-                  {60,61,62,63,66,-1},
-                  {64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,89,91,92,93,94,95,96,97,98,100,102,104,107,108,0,0,0,-1},
-                  {52,50,48,45,43,41,39,37,35,33,31,29,27,74,26,86,88,25,23,21,19,17,15,13,11,9,7,5,3,1,0,-1},
-                  {59,58,56,54,53,52,-1},
-                  {66,63,62,61,60,-1},
-                  {108,107,104,102,100,98,97,96,95,94,93,92,91,89,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,-1}};
+int lines[8][45] ={{0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,87,18,73,22,23,24,25,26,27,28,29,30,31,32,33,35,-1},
+                  {36,37,40,41,42,-1},
+                  {51,53,55,57,65,-1},
+                  {63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,80,82,83,84,85,86,87,89,90,91,95,96,97,98,99,100,102,103,104,105,107,108,0,0,0,-1},
+                  {35,33,32,31,30,29,28,27,26,25,24,23,22,73,18,87,15,13,12,11,10,9,8,7,6,5,4,3,2,1,0,-1},
+                  {42,41,40,37,36,-1},
+                  {65,57,55,53,51,-1},
+                  {108,107,105,104,103,102,100,99,98,97,96,95,91,90,89,87,86,85,84,83,82,80,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,-1}};
 
-int transferStations[] = {52,66,74,86,87,88};
-//{14,15,17,30,42,61};
-int transferStationsYellow[] = {66,74,86,88};
-//{14,15,17,42};
-int transferStationsPurple = 67;
-int transferStationsBlue = 53;
-int transferStationsGreen[] = {86,74,52,87};
+int transferStations[] = {15,35,65,73,87,89};
+int transferStationsYellow[] = {65,73,87,89,15};
+int transferStationsPurple = 65;
+int transferStationsBlue = 35;
+int transferStationsGreen[] = {15,89,87,73,35}; //15 and 89 are grouped
 int lineSize[] = {31,6,4,38,31,6,4,38};//36
 
 
@@ -34,129 +34,135 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
   randomSeed(analogRead(0));
 
-  for(int trainStop = 0; trainStop < findLength(0); trainStop++){
-    leds[lines[0][trainStop]] = CRGB::Green;
-    delay(30);
-    FastLED.show();
-  }
-  delay(50);
-  for(int trainStop = 0; trainStop < findLength(1); trainStop++){
-    leds[lines[1][trainStop]] = CRGB::Blue;
-    delay(30);
-    FastLED.show();
-  }
-  delay(50);
-  for(int trainStop = 0; trainStop < findLength(2); trainStop++){
-    leds[lines[2][trainStop]] = CRGB::Purple;
-    delay(30);
-    FastLED.show();
-  }
-  delay(50);
-  for(int trainStop = 0; trainStop < findLength(3); trainStop++){
-    leds[lines[3][trainStop]] = CRGB::Yellow;
-    delay(30);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(0); trainStop++){
-    leds[lines[0][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(1); trainStop++){
-    leds[lines[1][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(2); trainStop++){
-    leds[lines[2][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(3); trainStop++){
-    leds[lines[3][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
+  //test all leds...
+
+  // for(int trainStop = 0; trainStop < findLength(0); trainStop++){
+  //   leds[lines[0][trainStop]] = CRGB::Green;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(50);
+  // for(int trainStop = 0; trainStop < findLength(1); trainStop++){
+  //   leds[lines[1][trainStop]] = CRGB::Blue;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(50);
+  // for(int trainStop = 0; trainStop < findLength(2); trainStop++){
+  //   leds[lines[2][trainStop]] = CRGB::Purple;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(50);
+  // for(int trainStop = 0; trainStop < findLength(3); trainStop++){
+  //   leds[lines[3][trainStop]] = CRGB::Yellow;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(100);
+  // for(int trainStop = 0; trainStop < findLength(0); trainStop++){
+  //   leds[lines[0][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
+  // counterDelay(10);
+  // for(int trainStop = 0; trainStop < findLength(1); trainStop++){
+  //   leds[lines[1][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
+  // counterDelay(10);
+  // for(int trainStop = 0; trainStop < findLength(2); trainStop++){
+  //   leds[lines[2][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
+  // counterDelay(10);
+  // for(int trainStop = 0; trainStop < findLength(3); trainStop++){
+  //   leds[lines[3][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
   
-  delay(100);
+  // counterDelay(100);
 
-  for(int trainStop = 0; trainStop < findLength(7); trainStop++){
-    leds[lines[7][trainStop]] = CRGB::Yellow;
-    delay(30);
-    FastLED.show();
-  }
-  delay(50);
-  for(int trainStop = 0; trainStop < findLength(6); trainStop++){
-    leds[lines[6][trainStop]] = CRGB::Purple;
-    delay(30);
-    FastLED.show();
-  }
-  delay(50);
-  for(int trainStop = 0; trainStop < findLength(5); trainStop++){
-    leds[lines[5][trainStop]] = CRGB::Blue;
-    delay(30);
-    FastLED.show();
-  }
-  delay(50);
-  for(int trainStop = 0; trainStop < findLength(4); trainStop++){
-    leds[lines[4][trainStop]] = CRGB::Green;
-    delay(30);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(7); trainStop++){
-    leds[lines[7][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(6); trainStop++){
-    leds[lines[6][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(5); trainStop++){
-    leds[lines[5][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
-  delay(10);
-  for(int trainStop = 0; trainStop < findLength(4); trainStop++){
-    leds[lines[4][trainStop]] = CRGB::Black;
-    delay(10);
-    FastLED.show();
-  }
-/*while (true){
-  for(int i=0; i< 120; i++){
-    leds[i] = CRGB::Yellow;
-    delay(20);
-    FastLED.show();
-  }
-    delay(5000);
+  // for(int trainStop = 0; trainStop < findLength(7); trainStop++){
+  //   leds[lines[7][trainStop]] = CRGB::Yellow;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(50);
+  // for(int trainStop = 0; trainStop < findLength(6); trainStop++){
+  //   leds[lines[6][trainStop]] = CRGB::Purple;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(50);
+  // for(int trainStop = 0; trainStop < findLength(5); trainStop++){
+  //   leds[lines[5][trainStop]] = CRGB::Blue;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(50);
+  // for(int trainStop = 0; trainStop < findLength(4); trainStop++){
+  //   leds[lines[4][trainStop]] = CRGB::Green;
+  //   counterDelay(30);
+  //   FastLED.show();
+  // }
+  // counterDelay(10);
+  // for(int trainStop = 0; trainStop < findLength(7); trainStop++){
+  //   leds[lines[7][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
+  // counterDelay(10);
+  // for(int trainStop = 0; trainStop < findLength(6); trainStop++){
+  //   leds[lines[6][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
+  // counterDelay(10);
+  // for(int trainStop = 0; trainStop < findLength(5); trainStop++){
+  //   leds[lines[5][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
+  // counterDelay(10);
+  // for(int trainStop = 0; trainStop < findLength(4); trainStop++){
+  //   leds[lines[4][trainStop]] = CRGB::Black;
+  //   counterDelay(10);
+  //   FastLED.show();
+  // }
+  // while (true){
+  // for(int i=0; i< 120; i++){
+  //   leds[i] = CRGB::Yellow;
+  //   counterDelay(20);
+  //   FastLED.show();
+  // }
+  //   counterDelay(5000);
 
-  for(int i=0; i< 120; i++){
-    leds[i] = CRGB::Black;
-    delay(20);
-    FastLED.show();
-  }
-  }
-  delay(10000);*/
+  // for(int i=0; i< 120; i++){
+  //   leds[i] = CRGB::Black;
+  //   counterDelay(20);
+  //   FastLED.show();
+  // }
+  // }
+  // counterDelay(10000);
 }
 
 void turnOnColour(int led, int lineID){
   if (lineID == 0 || lineID == 4){
     leds[led] = CRGB::Green;
+    leds[led].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
   } else if (lineID == 1 || lineID == 5){
-    leds[led] = CRGB::Blue;  
+    leds[led] = CRGB::Blue;
+    leds[led].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
   } else if (lineID == 2 || lineID == 6){
     leds[led] = CRGB::Purple;
+    leds[led].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
   } else if (lineID == 3|| lineID == 7){
     leds[led] = CRGB::Yellow;
+    leds[led].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
   } else {
     leds[led] = CRGB::Black;
   }
@@ -166,7 +172,7 @@ int findLength(int lineID){
   for(int i = 0; i < sizeof(lines[lineID])/sizeof(lines[lineID][0]); i++){
     if(lines[lineID][i]==-1){
       if (lineID == 1){
-        return i; //number of transfer stops not inlcuded in the line , need to subtract
+        return i; //number of transfer stops not included in the line , need to subtract
       } else if (lineID == 3){
         return i-3;
       }
@@ -189,10 +195,10 @@ void turnOnLine(int line[], int lineID, int onOff){
 void blinkLine(int line[], int lineID){
       for(int blinkCount = 0; blinkCount < STATIONWAIT; blinkCount++){
         turnOnLine(line, lineID, 1);
-        delay(500*SPEED);
+        counterDelay(500*SPEED);
         FastLED.show();
         turnOnLine(line, lineID, 0);
-        delay(500*SPEED);
+        counterDelay(500*SPEED);
         FastLED.show();
       }
     return;
@@ -210,33 +216,63 @@ int checkTransferStop(int currentStop){
 void showTransferStops(){
   for(int transferStop = 0; transferStop < sizeof(transferStations)/sizeof(transferStations[0]); transferStop++){
     leds[transferStations[transferStop]] = COL_TRANSFER;
+    leds[transferStations[transferStop]].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
   }
   FastLED.show();
 }
 
 void removeAll(){
-  for(int led = 0; led < NUM_LEDS; led++){
+  for(int led = 0; led < BORDER_START-1; led++){
     leds[led] = CRGB::Black;
-    delay(0);
+    counterDelay(0);
     FastLED.show();
   }
 }
 
+uint8_t gHue = 0;
+
+void rainbowLine() 
+{
+  gHue++;
+  for( uint16_t i = BORDER_START; i < NUM_LEDS; ++i) {
+    leds[i].nscale8(255-20);
+  }
+  int pos = beatsin16(6, BORDER_START, NUM_LEDS-1);
+  leds[pos] += CHSV( gHue, 255, 192);
+  int pos2 = beatsin16(6, BORDER_START, NUM_LEDS-1);
+  leds[BORDER_START + NUM_LEDS-1 - pos2] += CHSV(gHue, 255, 192);
+  FastLED.show();
+}
+
+void counterDelay(int count){
+  int updates = 20;
+  int counterWait = 0;
+  while (count/updates > counterWait){
+    counterWait++;
+    delay(updates);
+    //put functions here that require constant clock updates
+    rainbowLine();
+  }
+  return;
+}
+
 void loop() {
   int currentLine = random(0,8);
-  //Reset
+  //reset
   removeAll();
   turnOnLine(lines[currentLine], currentLine, 1);
   showTransferStops();
-  delay(500);
+  counterDelay(20);  
 
   FastLED.show();
+
   for(int trainStop = 0; trainStop < findLength(currentLine); trainStop++){
     currentTransferStop = checkTransferStop(lines[currentLine][trainStop]);
-    //it doesnt make sense that the train tavels to the stop is starts on, because it leaves there. it needs to start off red and then just move on
+    //it doesn't make sense that the train tavels to the stop is starts on, because it leaves there. it needs to start off red and then just move on
     if(trainStop == 0){
       if (currentTransferStop == -1){
         leds[lines[currentLine][trainStop]] = CRGB::Red;
+        leds[lines[currentLine][trainStop]].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
       } else {
         leds[lines[currentLine][trainStop]] = COL_TRANSFER;
       }
@@ -246,33 +282,36 @@ void loop() {
     //turn red when train leaves then start flashing
     if (currentTransferStop == -1){
         leds[lines[currentLine][trainStop]] = CRGB::Red;
+        leds[lines[currentLine][trainStop]].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
       } else {
         leds[lines[currentLine][trainStop]] = COL_TRANSFER;
       }
     FastLED.show();
 
-    //Flash while train moving
+    //flash while train moving
     for(int trainTravelTime = 0; trainTravelTime < TRAINTRAVEL; trainTravelTime++){
       leds[lines[currentLine][trainStop]] = CRGB::Black;
-      delay(500*SPEED);
+      counterDelay(500*SPEED);
       FastLED.show();
       if (currentTransferStop == -1){
         leds[lines[currentLine][trainStop]] = CRGB::Red;
+        leds[lines[currentLine][trainStop]].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
       } else {
         leds[lines[currentLine][trainStop]] = COL_TRANSFER;
+        leds[lines[currentLine][trainStop]].fadeToBlackBy(LOWER_BRIGHTNESS_OF_LINES_PERCENT);
       }
-      delay(500*SPEED);
+      counterDelay(500*SPEED);
       FastLED.show();
       }
-    //Train arrived
+    //train arrived
     if (currentTransferStop == -1){
-      delay(1000*STATIONWAIT);
+      counterDelay(1000*STATIONWAIT);
     } else {
       if(currentLine != 0 && currentLine != 4){
         for(int transferStop = 0; transferStop < sizeof(transferStationsGreen)/sizeof(transferStationsGreen[0]); transferStop++){
           if(currentTransferStop == transferStationsGreen[transferStop]){
-              blinkLine(lines[0],0);
-              showTransferStops();
+            blinkLine(lines[0],0);
+            showTransferStops();
           }
         }
       }
